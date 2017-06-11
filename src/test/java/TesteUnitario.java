@@ -11,17 +11,20 @@ import java.util.List;
 import br.com.xyInc.controller.PoiController;
 import br.com.xyInc.dao.PoiDAO;
 import br.com.xyInc.model.PoiEntity;
+import br.com.xyInc.service.PoiService;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TesteUnitario {
 	
     private PoiDAO poiDaoMock = Mockito.mock(PoiDAO.class);	
-	private PoiController poiControllerMock = new PoiController(poiDaoMock);
+    private PoiService poiServiceMock = new PoiService(poiDaoMock);
+    private PoiController poiControllerMock = new PoiController(poiServiceMock);
+    	
 
 	@Test
 	public void testSalvar() {
 		PoiEntity poi = new PoiEntity("Teste", 10, 10);
-		Mockito.when(poiDaoMock.salvar(poi)).thenReturn(poi);
+		Mockito.when(poiServiceMock.salvar(poi)).thenReturn(poi);
 		PoiEntity result = poiControllerMock.salvar(poi);
 		Assert.assertEquals("Esperado que o nome do objeto seja igual do retorno", poi.getNomePoi(), result.getNomePoi());
 		Assert.assertEquals("Esperado que o x do objeto seja igual do retorno", poi.getCoordX(), result.getCoordX());
@@ -32,7 +35,7 @@ public class TesteUnitario {
 	public void testNaoSalvar() {		
 		//Parametro null
 		PoiEntity poi = new PoiEntity("", 10, 10);
-		Mockito.when(poiDaoMock.salvar(poi)).thenReturn(poi);
+		Mockito.when(poiServiceMock.salvar(poi)).thenReturn(poi);
 		PoiEntity result = poiControllerMock.salvar(poi);
 		Assert.assertEquals("Esperado que retorne null", result, null);
 	}
@@ -41,7 +44,7 @@ public class TesteUnitario {
 	public void testNaoSalvarCoordNegativa() {		
 		//Coordenada negativa
 		PoiEntity poi = new PoiEntity("Local teste", -10, 10);
-		Mockito.when(poiDaoMock.salvar(poi)).thenReturn(poi);
+		Mockito.when(poiServiceMock.salvar(poi)).thenReturn(poi);
 		PoiEntity result = poiControllerMock.salvar(poi);
 		Assert.assertEquals("Esperado que retorne null", result, null);
 	}
@@ -53,7 +56,7 @@ public class TesteUnitario {
 		listaPoi.add(new PoiEntity("LanchoneteTeste",27, 12));
 		listaPoi.add(new PoiEntity("PostoTeste",31, 18));
 		listaPoi.add(new PoiEntity("JoalheriaTeste", 15, 12));
-		Mockito.when(poiDaoMock.listarTodos()).thenReturn(listaPoi);	
+		Mockito.when(poiServiceMock.listarTodos()).thenReturn(listaPoi);	
 		List<PoiEntity> result = poiControllerMock.listarTodos();
 		Assert.assertEquals("Esperado que o tamanho da lista retornada seja 3", result.size(), 3);		
 	}
@@ -65,7 +68,7 @@ public class TesteUnitario {
 		listaPoi.add(new PoiEntity("PostoTeste",31, 18));
 		listaPoi.add(new PoiEntity("JoalheriaTeste", 15, 12));
 		
-		Mockito.when(poiDaoMock.recuperarPorDistancia(10, 30, 0, 20)).thenReturn(listaPoi);		
+		Mockito.when(poiServiceMock.recuperarPorDistancia(20, 10, 10)).thenReturn(listaPoi);
 		List<PoiEntity> result = poiControllerMock.recuperarPorDistancia(20, 10, 10);
 		Assert.assertEquals("Esperado que o tamanho da lista retornada seja 2", result.size(), 2);
 		Assert.assertEquals("Esperado  que o  POI fora do quadrante não esteja na lista retornada", result.contains(listaPoi.get(1)), false);
@@ -78,7 +81,7 @@ public class TesteUnitario {
 		listaPoi.add(new PoiEntity("PostoTeste",31, 18));
 		listaPoi.add(new PoiEntity("JoalheriaTeste", 15, 12));
 		
-		Mockito.when(poiDaoMock.recuperarPorDistancia(10, 30, 0, 20)).thenReturn(listaPoi);		
+		Mockito.when(poiServiceMock.recuperarPorDistancia(20, 10, 1)).thenReturn(listaPoi);
 		List<PoiEntity> result = poiControllerMock.recuperarPorDistancia(20, 10, 1);
 		Assert.assertEquals("Esperado retorne null", result, null);
 	}
@@ -92,7 +95,7 @@ public class TesteUnitario {
 		listaPoi.add(new PoiEntity("PostoTeste",31, 18));
 		listaPoi.add(new PoiEntity("JoalheriaTeste", 15, 12));
 		
-		Mockito.when(poiDaoMock.recuperarPorDistancia(10, 30, 0, 20)).thenReturn(listaPoi);		
+		Mockito.when(poiServiceMock.recuperarPorDistancia(20, 10, -10)).thenReturn(listaPoi);
 		List<PoiEntity> result = poiControllerMock.recuperarPorDistancia(20, 10, -10);
 		Assert.assertEquals("Esperado retorne null", result, null);
 	}

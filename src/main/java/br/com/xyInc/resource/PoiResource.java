@@ -12,6 +12,7 @@ import javax.ws.rs.QueryParam;
 import br.com.xyInc.controller.PoiController;
 import br.com.xyInc.dao.PoiDAO;
 import br.com.xyInc.model.PoiEntity;
+import br.com.xyInc.service.PoiService;
 
 
 /**
@@ -37,7 +38,7 @@ public class PoiResource {
 	public String cadastrar(PoiEntity poi){
 		try {			
 
-			PoiEntity result = new PoiController(PoiDAO.getInstance()).salvar(poi);
+			PoiEntity result = new PoiController(new PoiService(PoiDAO.getInstance())).salvar(poi);
 			if(result == null){
 
 				return "Falta algum atributo do registro";	
@@ -62,7 +63,7 @@ public class PoiResource {
 	@Path("/listarTodos")
 	public List<PoiEntity> listarTodos(){	 
 
-		return new PoiController(PoiDAO.getInstance()).listarTodos();
+		return new PoiController(new PoiService(PoiDAO.getInstance())).listarTodos();
 
 	}
 
@@ -75,7 +76,7 @@ public class PoiResource {
 	@Path("/buscarPerto")	
 	public List<PoiEntity> RecuperarDistancia(@QueryParam("coordX") Integer coordX, @QueryParam("coordY") Integer coordY, @QueryParam("distMax") Integer distMax){
 
-		return new PoiController(PoiDAO.getInstance()).recuperarPorDistancia(coordX, coordY, distMax);
+		return new PoiController(new PoiService(PoiDAO.getInstance())).recuperarPorDistancia(coordX, coordY, distMax);
 
 	}
 
